@@ -1,9 +1,8 @@
-package com.easesplit.ease_splitBackend.service;
+package com.ease_splitBackend.ease_splitBackend.service;
 
-import com.easesplit.ease_splitBackend.dto.CreateExpenseRequest;
-import com.easesplit.ease_splitBackend.entity.*;
-import com.easesplit.ease_splitBackend.repository.*;
-
+import com.ease_splitBackend.ease_splitBackend.dto.CreateExpenseRequest;
+import com.ease_splitBackend.ease_splitBackend.entity.*;
+import com.ease_splitBackend.ease_splitBackend.repository.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

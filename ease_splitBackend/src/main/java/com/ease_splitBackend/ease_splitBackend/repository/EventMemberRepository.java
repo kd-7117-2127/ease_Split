@@ -1,6 +1,6 @@
-package com.easesplit.ease_splitBackend.repository;
+package com.ease_splitBackend.ease_splitBackend.repository;
 
-import com.easesplit.ease_splitBackend.entity.EventMember;
+import com.ease_splitBackend.ease_splitBackend.entity.EventMember;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

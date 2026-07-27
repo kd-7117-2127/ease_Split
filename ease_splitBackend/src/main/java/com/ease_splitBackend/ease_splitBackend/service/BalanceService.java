@@ -1,15 +1,14 @@
-package com.easesplit.ease_splitBackend.service;
+package com.ease_splitBackend.ease_splitBackend.service;
 
-import com.easesplit.ease_splitBackend.dto.BalanceResponse;
-import com.easesplit.ease_splitBackend.entity.EventMember;
-import com.easesplit.ease_splitBackend.entity.Expense;
-import com.easesplit.ease_splitBackend.entity.ExpenseSplit;
-import com.easesplit.ease_splitBackend.entity.User;
-import com.easesplit.ease_splitBackend.repository.EventMemberRepository;
-import com.easesplit.ease_splitBackend.repository.EventRepository;
-import com.easesplit.ease_splitBackend.repository.ExpenseRepository;
-import com.easesplit.ease_splitBackend.repository.ExpenseSplitRepository;
-
+import com.ease_splitBackend.ease_splitBackend.dto.BalanceResponse;
+import com.ease_splitBackend.ease_splitBackend.entity.EventMember;
+import com.ease_splitBackend.ease_splitBackend.entity.Expense;
+import com.ease_splitBackend.ease_splitBackend.entity.ExpenseSplit;
+import com.ease_splitBackend.ease_splitBackend.entity.User;
+import com.ease_splitBackend.ease_splitBackend.repository.EventMemberRepository;
+import com.ease_splitBackend.ease_splitBackend.repository.EventRepository;
+import com.ease_splitBackend.ease_splitBackend.repository.ExpenseRepository;
+import com.ease_splitBackend.ease_splitBackend.repository.ExpenseSplitRepository;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;

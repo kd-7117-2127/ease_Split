@@ -1,5 +1,4 @@
-package com.easesplit.ease_splitBackend.service;
-
+package com.ease_splitBackend.ease_splitBackend.service;
 import java.math.BigDecimal;
 
 public class BalanceEntry {

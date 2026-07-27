@@ -1,7 +1,7 @@
-package com.easesplit.ease_splitBackend.controller;
+package com.ease_splitBackend.ease_splitBackend.controller;
 
-import com.easesplit.ease_splitBackend.entity.Event;
-import com.easesplit.ease_splitBackend.service.EventService;
+import com.ease_splitBackend.ease_splitBackend.entity.Event;
+import com.ease_splitBackend.ease_splitBackend.service.EventService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

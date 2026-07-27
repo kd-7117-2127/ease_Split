@@ -1,5 +1,4 @@
-package com.easesplit.ease_splitBackend.entity;
-
+package com.ease_splitBackend.ease_splitBackend.entity;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
@@ -24,7 +23,6 @@ public class Event {
     public Event(String name, String description) {
         this.name = name;
         this.description = description;
-        this.createdAt = LocalDateTime.now();
     }
 
     public Long getId() {
@@ -50,4 +48,8 @@ public class Event {
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
+	@PrePersist
+	protected void onCreate() {
+    	createdAt = LocalDateTime.now();
+	}
 }

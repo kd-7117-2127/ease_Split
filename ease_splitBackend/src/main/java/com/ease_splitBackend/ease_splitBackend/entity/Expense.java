@@ -1,5 +1,4 @@
-package com.easesplit.ease_splitBackend.entity;
-
+package com.ease_splitBackend.ease_splitBackend.entity;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

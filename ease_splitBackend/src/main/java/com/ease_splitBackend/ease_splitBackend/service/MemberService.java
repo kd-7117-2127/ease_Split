@@ -1,12 +1,11 @@
-package com.easesplit.ease_splitBackend.service;
-
-import com.easesplit.ease_splitBackend.dto.AddMemberRequest;
-import com.easesplit.ease_splitBackend.entity.Event;
-import com.easesplit.ease_splitBackend.entity.EventMember;
-import com.easesplit.ease_splitBackend.entity.User;
-import com.easesplit.ease_splitBackend.repository.EventMemberRepository;
-import com.easesplit.ease_splitBackend.repository.EventRepository;
-import com.easesplit.ease_splitBackend.repository.UserRepository;
+package com.ease_splitBackend.ease_splitBackend.service;
+import com.ease_splitBackend.ease_splitBackend.dto.AddMemberRequest;
+import com.ease_splitBackend.ease_splitBackend.entity.Event;
+import com.ease_splitBackend.ease_splitBackend.entity.EventMember;
+import com.ease_splitBackend.ease_splitBackend.entity.User;
+import com.ease_splitBackend.ease_splitBackend.repository.EventMemberRepository;
+import com.ease_splitBackend.ease_splitBackend.repository.EventRepository;
+import com.ease_splitBackend.ease_splitBackend.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

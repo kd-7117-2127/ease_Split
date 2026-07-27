@@ -1,7 +1,7 @@
-package com.easesplit.ease_splitBackend.service;
+package com.ease_splitBackend.ease_splitBackend.service;
 
-import com.easesplit.ease_splitBackend.entity.Event;
-import com.easesplit.ease_splitBackend.repository.EventRepository;
+import com.ease_splitBackend.ease_splitBackend.entity.Event;
+import com.ease_splitBackend.ease_splitBackend.repository.EventRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

@@ -1,8 +1,7 @@
-package com.easesplit.ease_splitBackend.service;
+package com.ease_splitBackend.ease_splitBackend.service;
 
-import com.easesplit.ease_splitBackend.dto.BalanceResponse;
-import com.easesplit.ease_splitBackend.dto.SettlementResponse;
-
+import com.ease_splitBackend.ease_splitBackend.dto.BalanceResponse;
+import com.ease_splitBackend.ease_splitBackend.dto.SettlementResponse;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;

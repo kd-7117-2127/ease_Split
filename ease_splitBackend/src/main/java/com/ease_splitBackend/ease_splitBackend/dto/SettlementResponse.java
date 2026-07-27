@@ -1,5 +1,4 @@
-package com.easesplit.ease_splitBackend.dto;
-
+package com.ease_splitBackend.ease_splitBackend.dto;
 import java.math.BigDecimal;
 
 public class SettlementResponse {

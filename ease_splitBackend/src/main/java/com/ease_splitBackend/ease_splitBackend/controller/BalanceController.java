@@ -1,8 +1,7 @@
-package com.easesplit.ease_splitBackend.controller;
+package com.ease_splitBackend.ease_splitBackend.controller;
 
-import com.easesplit.ease_splitBackend.dto.BalanceResponse;
-import com.easesplit.ease_splitBackend.service.BalanceService;
-
+import com.ease_splitBackend.ease_splitBackend.dto.BalanceResponse;
+import com.ease_splitBackend.ease_splitBackend.service.BalanceService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
