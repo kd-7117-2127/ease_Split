@@ -5,13 +5,16 @@ import com.ease_splitBackend.ease_splitBackend.entity.EventMember;
 import com.ease_splitBackend.ease_splitBackend.entity.Expense;
 import com.ease_splitBackend.ease_splitBackend.entity.ExpenseSplit;
 import com.ease_splitBackend.ease_splitBackend.entity.User;
+import com.ease_splitBackend.ease_splitBackend.exception.ResourceNotFoundException;
 import com.ease_splitBackend.ease_splitBackend.repository.EventMemberRepository;
 import com.ease_splitBackend.ease_splitBackend.repository.EventRepository;
 import com.ease_splitBackend.ease_splitBackend.repository.ExpenseRepository;
 import com.ease_splitBackend.ease_splitBackend.repository.ExpenseSplitRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,68 +40,41 @@ public class BalanceService {
         this.expenseSplitRepository = expenseSplitRepository;
     }
 
+    @Transactional(readOnly = true)
     public List<BalanceResponse> calculateBalances(Long eventId) {
+        if (!eventRepository.existsById(eventId)) {
+            throw new ResourceNotFoundException("Event not found with ID: " + eventId);
+        }
 
-        eventRepository.findById(eventId)
-                .orElseThrow(() ->
-                        new RuntimeException("Event not found"));
-
-        List<EventMember> members =
-                eventMemberRepository.findByEventId(eventId);
-
-        List<Expense> expenses =
-                expenseRepository.findByEventId(eventId);
-
-        List<ExpenseSplit> splits =
-                expenseSplitRepository.findByExpenseEventId(eventId);
+        List<EventMember> members = eventMemberRepository.findByEventId(eventId);
+        List<Expense> expenses = expenseRepository.findByEventId(eventId);
+        List<ExpenseSplit> splits = expenseSplitRepository.findByExpenseEventId(eventId);
 
         Map<Long, BigDecimal> balances = new HashMap<>();
 
-        // Start every member at zero
         for (EventMember member : members) {
-            balances.put(
-                    member.getUser().getId(),
-                    BigDecimal.ZERO
-            );
+            balances.put(member.getUser().getId(), BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP));
         }
 
-        // Money paid increases balance
         for (Expense expense : expenses) {
-
             Long payerId = expense.getPaidBy().getId();
-
-            balances.put(
-                    payerId,
-                    balances.get(payerId)
-                            .add(expense.getAmount())
-            );
+            if (balances.containsKey(payerId)) {
+                balances.put(payerId, balances.get(payerId).add(expense.getAmount()));
+            }
         }
 
-        // Share owed decreases balance
         for (ExpenseSplit split : splits) {
-
             Long userId = split.getUser().getId();
-
-            balances.put(
-                    userId,
-                    balances.get(userId)
-                            .subtract(split.getShareAmount())
-            );
+            if (balances.containsKey(userId)) {
+                balances.put(userId, balances.get(userId).subtract(split.getShareAmount()));
+            }
         }
 
         List<BalanceResponse> result = new ArrayList<>();
-
         for (EventMember member : members) {
-
             User user = member.getUser();
-
-            result.add(
-                    new BalanceResponse(
-                            user.getId(),
-                            user.getName(),
-                            balances.get(user.getId())
-                    )
-            );
+            BigDecimal netBalance = balances.getOrDefault(user.getId(), BigDecimal.ZERO).setScale(2, RoundingMode.HALF_UP);
+            result.add(new BalanceResponse(user.getId(), user.getName(), netBalance));
         }
 
         return result;

@@ -1,14 +1,21 @@
 package com.ease_splitBackend.ease_splitBackend.service;
+
 import com.ease_splitBackend.ease_splitBackend.dto.AddMemberRequest;
+import com.ease_splitBackend.ease_splitBackend.dto.MemberResponse;
 import com.ease_splitBackend.ease_splitBackend.entity.Event;
 import com.ease_splitBackend.ease_splitBackend.entity.EventMember;
 import com.ease_splitBackend.ease_splitBackend.entity.User;
+import com.ease_splitBackend.ease_splitBackend.exception.BadRequestException;
+import com.ease_splitBackend.ease_splitBackend.exception.ResourceNotFoundException;
 import com.ease_splitBackend.ease_splitBackend.repository.EventMemberRepository;
 import com.ease_splitBackend.ease_splitBackend.repository.EventRepository;
 import com.ease_splitBackend.ease_splitBackend.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class MemberService {
@@ -27,28 +34,40 @@ public class MemberService {
         this.eventMemberRepository = eventMemberRepository;
     }
 
-    public EventMember addMember(
-            Long eventId,
-            AddMemberRequest request) {
-
+    @Transactional
+    public MemberResponse addMember(Long eventId, AddMemberRequest request) {
         Event event = eventRepository.findById(eventId)
-                .orElseThrow(() ->
-                        new RuntimeException("Event not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Event not found with ID: " + eventId));
 
-        User user = new User(
-                request.getName(),
-                request.getEmail()
-        );
+        User user;
+        String email = request.getEmail() != null ? request.getEmail().trim().toLowerCase() : null;
 
-        user = userRepository.save(user);
+        if (email != null && !email.isEmpty()) {
+            Optional<User> existingUser = userRepository.findByEmail(email);
+            if (existingUser.isPresent()) {
+                user = existingUser.get();
+                if (eventMemberRepository.existsByEventIdAndUserId(eventId, user.getId())) {
+                    throw new BadRequestException("User with email '" + email + "' is already a member of this event");
+                }
+            } else {
+                user = userRepository.save(new User(request.getName().trim(), email));
+            }
+        } else {
+            user = userRepository.save(new User(request.getName().trim(), null));
+        }
 
-        EventMember eventMember =
-                new EventMember(event, user);
-
-        return eventMemberRepository.save(eventMember);
+        EventMember eventMember = new EventMember(event, user);
+        EventMember saved = eventMemberRepository.save(eventMember);
+        return MemberResponse.fromEntity(saved);
     }
 
-    public List<EventMember> getMembers(Long eventId) {
-        return eventMemberRepository.findByEventId(eventId);
+    @Transactional(readOnly = true)
+    public List<MemberResponse> getMembers(Long eventId) {
+        if (!eventRepository.existsById(eventId)) {
+            throw new ResourceNotFoundException("Event not found with ID: " + eventId);
+        }
+        return eventMemberRepository.findByEventId(eventId).stream()
+                .map(MemberResponse::fromEntity)
+                .collect(Collectors.toList());
     }
 }

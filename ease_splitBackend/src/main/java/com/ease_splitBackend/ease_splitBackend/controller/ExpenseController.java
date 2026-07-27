@@ -1,8 +1,10 @@
 package com.ease_splitBackend.ease_splitBackend.controller;
 
 import com.ease_splitBackend.ease_splitBackend.dto.CreateExpenseRequest;
-import com.ease_splitBackend.ease_splitBackend.entity.Expense;
+import com.ease_splitBackend.ease_splitBackend.dto.ExpenseResponse;
 import com.ease_splitBackend.ease_splitBackend.service.ExpenseService;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,24 +15,21 @@ public class ExpenseController {
 
     private final ExpenseService expenseService;
 
-    public ExpenseController(
-            ExpenseService expenseService) {
+    public ExpenseController(ExpenseService expenseService) {
         this.expenseService = expenseService;
     }
 
     @PostMapping
-    public Expense createExpense(
+    @ResponseStatus(HttpStatus.CREATED)
+    public ExpenseResponse createExpense(
             @PathVariable Long eventId,
-            @RequestBody CreateExpenseRequest request) {
+            @Valid @RequestBody CreateExpenseRequest request) {
 
-        return expenseService.createExpense(
-                eventId,
-                request
-        );
+        return expenseService.createExpense(eventId, request);
     }
 
     @GetMapping
-    public List<Expense> getExpenses(
+    public List<ExpenseResponse> getExpenses(
             @PathVariable Long eventId) {
 
         return expenseService.getExpenses(eventId);

@@ -1,39 +1,71 @@
-.navbar{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-
-    padding:18px 80px;
-
-    background:white;
-
-    box-shadow:0 2px 15px rgba(0,0,0,.08);
-
-    position:sticky;
-    top:0;
-    z-index:100;
+.navbar {
+  background: rgba(13, 19, 33, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-color);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  padding: 1rem 0;
 }
 
-.logo{
-    font-size:28px;
-    font-weight:bold;
+.navbar-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.links{
-    display:flex;
-    gap:40px;
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-heading);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #ffffff;
 }
 
-.links a{
-    color:#444;
-    font-weight:600;
-    transition:.3s;
+.brand-icon {
+  width: 36px;
+  height: 36px;
+  background: var(--primary-gradient);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
 }
 
-.links a:hover{
-    color:#4f46e5;
+.brand-accent {
+  color: var(--primary);
 }
 
-.links .active{
-    color:#4f46e5;
+.navbar-nav {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.nav-link {
+  color: var(--text-muted);
+  font-weight: 500;
+  font-size: 0.95rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: var(--radius-sm);
+  transition: all 0.2s ease;
+}
+
+.nav-link:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.nav-link.active {
+  color: #ffffff;
+  background: rgba(99, 102, 241, 0.15);
+  border: 1px solid rgba(99, 102, 241, 0.3);
 }

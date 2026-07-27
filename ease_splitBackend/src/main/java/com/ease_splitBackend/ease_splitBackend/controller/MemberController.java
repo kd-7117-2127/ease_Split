@@ -1,8 +1,10 @@
 package com.ease_splitBackend.ease_splitBackend.controller;
 
 import com.ease_splitBackend.ease_splitBackend.dto.AddMemberRequest;
-import com.ease_splitBackend.ease_splitBackend.entity.EventMember;
+import com.ease_splitBackend.ease_splitBackend.dto.MemberResponse;
 import com.ease_splitBackend.ease_splitBackend.service.MemberService;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,15 +20,16 @@ public class MemberController {
     }
 
     @PostMapping
-    public EventMember addMember(
+    @ResponseStatus(HttpStatus.CREATED)
+    public MemberResponse addMember(
             @PathVariable Long eventId,
-            @RequestBody AddMemberRequest request) {
+            @Valid @RequestBody AddMemberRequest request) {
 
         return memberService.addMember(eventId, request);
     }
 
     @GetMapping
-    public List<EventMember> getMembers(
+    public List<MemberResponse> getMembers(
             @PathVariable Long eventId) {
 
         return memberService.getMembers(eventId);

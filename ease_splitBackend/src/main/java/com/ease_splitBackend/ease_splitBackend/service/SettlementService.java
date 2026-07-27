@@ -5,6 +5,7 @@ import com.ease_splitBackend.ease_splitBackend.dto.SettlementResponse;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -19,95 +20,56 @@ public class SettlementService {
         this.balanceService = balanceService;
     }
 
-    public List<SettlementResponse> calculateSettlements(
-            Long eventId) {
+    public List<SettlementResponse> calculateSettlements(Long eventId) {
+        List<BalanceResponse> balances = balanceService.calculateBalances(eventId);
 
-        List<BalanceResponse> balances =
-                balanceService.calculateBalances(eventId);
+        PriorityQueue<BalanceEntry> creditors = new PriorityQueue<>(
+                Comparator.comparing(BalanceEntry::getAmount).reversed()
+        );
 
-        PriorityQueue<BalanceEntry> creditors =
-                new PriorityQueue<>(
-                        Comparator.comparing(
-                                BalanceEntry::getAmount
-                        ).reversed()
-                );
-
-        PriorityQueue<BalanceEntry> debtors =
-                new PriorityQueue<>(
-                        Comparator.comparing(
-                                BalanceEntry::getAmount
-                        ).reversed()
-                );
+        PriorityQueue<BalanceEntry> debtors = new PriorityQueue<>(
+                Comparator.comparing(BalanceEntry::getAmount).reversed()
+        );
 
         for (BalanceResponse balance : balances) {
-
-            int comparison =
-                    balance.getBalance()
-                            .compareTo(BigDecimal.ZERO);
+            int comparison = balance.getBalance().compareTo(BigDecimal.ZERO);
 
             if (comparison > 0) {
-
-                creditors.add(
-                        new BalanceEntry(
-                                balance.getUserId(),
-                                balance.getName(),
-                                balance.getBalance()
-                        )
-                );
-
+                creditors.add(new BalanceEntry(balance.getUserId(), balance.getName(), balance.getBalance()));
             } else if (comparison < 0) {
-
-                debtors.add(
-                        new BalanceEntry(
-                                balance.getUserId(),
-                                balance.getName(),
-                                balance.getBalance().abs()
-                        )
-                );
+                debtors.add(new BalanceEntry(balance.getUserId(), balance.getName(), balance.getBalance().abs()));
             }
         }
 
-        List<SettlementResponse> settlements =
-                new ArrayList<>();
+        List<SettlementResponse> settlements = new ArrayList<>();
 
-        while (!creditors.isEmpty()
-                && !debtors.isEmpty()) {
-
+        while (!creditors.isEmpty() && !debtors.isEmpty()) {
             BalanceEntry creditor = creditors.poll();
             BalanceEntry debtor = debtors.poll();
 
-            BigDecimal settlementAmount =
-                    creditor.getAmount()
-                            .min(debtor.getAmount());
+            BigDecimal settlementAmount = creditor.getAmount().min(debtor.getAmount()).setScale(2, RoundingMode.HALF_UP);
 
-            settlements.add(
-                    new SettlementResponse(
-                            debtor.getUserId(),
-                            debtor.getName(),
-                            creditor.getUserId(),
-                            creditor.getName(),
-                            settlementAmount
-                    )
-            );
+            if (settlementAmount.compareTo(BigDecimal.ZERO) > 0) {
+                settlements.add(
+                        new SettlementResponse(
+                                debtor.getUserId(),
+                                debtor.getName(),
+                                creditor.getUserId(),
+                                creditor.getName(),
+                                settlementAmount
+                        )
+                );
+            }
 
-            BigDecimal remainingCredit =
-                    creditor.getAmount()
-                            .subtract(settlementAmount);
+            BigDecimal remainingCredit = creditor.getAmount().subtract(settlementAmount).setScale(2, RoundingMode.HALF_UP);
+            BigDecimal remainingDebt = debtor.getAmount().subtract(settlementAmount).setScale(2, RoundingMode.HALF_UP);
 
-            BigDecimal remainingDebt =
-                    debtor.getAmount()
-                            .subtract(settlementAmount);
-
-            if (remainingCredit
-                    .compareTo(BigDecimal.ZERO) > 0) {
-
+            if (remainingCredit.compareTo(new BigDecimal("0.001")) > 0) {
                 creditor.setAmount(remainingCredit);
                 creditors.add(creditor);
             }
 
-            if (remainingDebt
-                    .compareTo(BigDecimal.ZERO) > 0) {
-
+            if (remainingDebt.compareTo(new BigDecimal("0.001")) > 0) {
                 debtor.setAmount(remainingDebt);
                 debtors.add(debtor);
             }

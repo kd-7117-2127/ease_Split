@@ -1,8 +1,15 @@
-.footer{
-    background:#111827;
-    color:white;
+.footer {
+  border-top: 1px solid var(--border-color);
+  padding: 1.5rem 0;
+  margin-top: 4rem;
+  background: rgba(13, 19, 33, 0.4);
+}
 
-    padding:25px;
-
-    text-align:center;
+.footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 0.875rem;
 }

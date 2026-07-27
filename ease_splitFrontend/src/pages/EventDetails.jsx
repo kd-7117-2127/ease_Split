@@ -1,124 +1,138 @@
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-
+import { useEffect, useState, useCallback } from "react";
+import { useParams, Link } from "react-router-dom";
 import {
+  getEventDetails,
   getMembers,
   getExpenses,
   getBalances,
-  getSettlements
+  getSettlements,
 } from "../api/easeSplitApi";
 
-function EventDetails() {
+import MemberList from "../components/MemberList/MemberList";
+import ExpenseList from "../components/ExpenseList/ExpenseList";
+import BalanceList from "../components/BalanceList/BalanceList";
+import SettlementList from "../components/SettlementList/SettlementList";
 
+import "./EventDetails.css";
+
+function EventDetails() {
   const { eventId } = useParams();
 
+  const [event, setEvent] = useState(null);
   const [members, setMembers] = useState([]);
   const [expenses, setExpenses] = useState([]);
   const [balances, setBalances] = useState([]);
-  const [settlements, setSettlements] =
-    useState([]);
+  const [settlements, setSettlements] = useState([]);
 
-  async function loadData() {
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
+  const loadAllData = useCallback(async () => {
     try {
+      const [eventData, membersData, expensesData, balancesData, settlementsData] =
+        await Promise.all([
+          getEventDetails(eventId).catch(() => null),
+          getMembers(eventId),
+          getExpenses(eventId),
+          getBalances(eventId),
+          getSettlements(eventId),
+        ]);
 
-      const [
-        membersData,
-        expensesData,
-        balancesData,
-        settlementsData
-      ] = await Promise.all([
-        getMembers(eventId),
-        getExpenses(eventId),
-        getBalances(eventId),
-        getSettlements(eventId)
-      ]);
-
-      setMembers(membersData);
-      setExpenses(expensesData);
-      setBalances(balancesData);
-      setSettlements(settlementsData);
-
-    } catch (error) {
-
-      console.error(error);
-
+      if (eventData) {
+        setEvent(eventData);
+      }
+      setMembers(membersData || []);
+      setExpenses(expensesData || []);
+      setBalances(balancesData || []);
+      setSettlements(settlementsData || []);
+    } catch (err) {
+      console.error(err);
+      setError("Failed to fetch event data. Please verify the event ID.");
+    } finally {
+      setLoading(false);
     }
-  }
-
-  useEffect(() => {
-    loadData();
   }, [eventId]);
 
+  useEffect(() => {
+    loadAllData();
+  }, [loadAllData]);
+
+  if (loading) {
+    return (
+      <div className="app-container loading-container">
+        <div className="spinner"></div>
+        <p>Loading event dashboard...</p>
+      </div>
+    );
+  }
+
+  const totalSpent = expenses.reduce(
+    (sum, item) => sum + (parseFloat(item.amount) || 0),
+    0
+  );
+
   return (
-    <section>
+    <div className="app-container event-details-page">
+      <div className="dashboard-top-nav">
+        <Link to="/" className="back-btn">
+          ← Back to Events
+        </Link>
+      </div>
 
-      <h1>Event Dashboard</h1>
+      {error && <div className="alert-error">{error}</div>}
 
-      <h2>Members</h2>
-
-      {members.map((member) => (
-        <p key={member.id}>
-          {member.user.name}
-        </p>
-      ))}
-
-
-      <h2>Expenses</h2>
-
-      {expenses.map((expense) => (
-        <div key={expense.id}>
-
-          <strong>
-            {expense.description}
-          </strong>
-
-          {" - $"}
-
-          {expense.amount}
-
-          {" - Paid by "}
-
-          {expense.paidBy.name}
-
+      {/* Header & Stats Banner */}
+      <div className="event-banner card">
+        <div className="banner-info">
+          <div className="banner-avatar">
+            {event?.name ? event.name.charAt(0).toUpperCase() : "E"}
+          </div>
+          <div>
+            <h1>{event?.name || `Event #${eventId}`}</h1>
+            <p className="banner-desc">
+              {event?.description || "Shared expense tracking event"}
+            </p>
+          </div>
         </div>
-      ))}
 
+        <div className="banner-stats">
+          <div className="stat-card">
+            <span className="stat-label">Total Expense</span>
+            <span className="stat-value primary-stat">${totalSpent.toFixed(2)}</span>
+          </div>
+          <div className="stat-card">
+            <span className="stat-label">Members</span>
+            <span className="stat-value">{members.length}</span>
+          </div>
+          <div className="stat-card">
+            <span className="stat-label">Expenses</span>
+            <span className="stat-value">{expenses.length}</span>
+          </div>
+        </div>
+      </div>
 
-      <h2>Balances</h2>
+      {/* Main Grid Layout */}
+      <div className="dashboard-grid">
+        <div className="grid-col left-col">
+          <MemberList
+            eventId={eventId}
+            members={members}
+            onMemberAdded={loadAllData}
+          />
+          <ExpenseList
+            eventId={eventId}
+            expenses={expenses}
+            members={members}
+            onExpenseAdded={loadAllData}
+          />
+        </div>
 
-      {balances.map((balance) => (
-        <p key={balance.userId}>
-
-          {balance.name}
-
-          {" : $"}
-
-          {balance.balance}
-
-        </p>
-      ))}
-
-
-      <h2>Settlements</h2>
-
-      {settlements.map((settlement, index) => (
-        <p key={index}>
-
-          {settlement.fromUserName}
-
-          {" pays "}
-
-          {settlement.toUserName}
-
-          {" : $"}
-
-          {settlement.amount}
-
-        </p>
-      ))}
-
-    </section>
+        <div className="grid-col right-col">
+          <BalanceList balances={balances} />
+          <SettlementList settlements={settlements} />
+        </div>
+      </div>
+    </div>
   );
 }
 
