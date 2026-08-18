@@ -1,0 +1,49 @@
+# =========================
+# Node / React / Vite
+# =========================
+
+node_modules/
+.npm/
+dist/
+.vite/
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+
+# =========================
+# Java / Spring Boot / Maven
+# =========================
+
+target/
+.mvn/timing.properties
+
+# Maven local repository
+.m2/
+
+# =========================
+# Spring / IDE
+# =========================
+
+.idea/
+*.iml
+.classpath
+.project
+.settings/
+
+# VS Code
+.vscode/
+
+# =========================
+# OS
+# =========================
+
+.DS_Store
+Thumbs.db
