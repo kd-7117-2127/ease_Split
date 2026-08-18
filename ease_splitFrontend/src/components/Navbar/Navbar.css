@@ -1,71 +1,77 @@
 .navbar {
-  background: rgba(13, 19, 33, 0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border-color);
+  background: color-mix(in oklab, var(--bg) 88%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
   position: sticky;
   top: 0;
   z-index: 100;
-  padding: 1rem 0;
 }
 
 .navbar-container {
-  max-width: 1200px;
+  max-width: 1120px;
   margin: 0 auto;
-  padding: 0 1.5rem;
+  padding: 0.8rem 1.5rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 1rem;
 }
 
 .navbar-brand {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
-  font-family: var(--font-heading);
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: #ffffff;
+  gap: 0.65rem;
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--text);
 }
 
-.brand-icon {
-  width: 36px;
-  height: 36px;
-  background: var(--primary-gradient);
-  border-radius: var(--radius-sm);
+.brand-mark {
+  width: 30px;
+  height: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.1rem;
-  box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
-}
-
-.brand-accent {
-  color: var(--primary);
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  color: var(--accent-ink);
+  background: var(--accent);
+  border-radius: var(--radius-sm);
 }
 
 .navbar-nav {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  gap: 1rem;
 }
 
 .nav-link {
+  position: relative;
   color: var(--text-muted);
+  font-size: 0.92rem;
   font-weight: 500;
-  font-size: 0.95rem;
-  padding: 0.4rem 0.8rem;
-  border-radius: var(--radius-sm);
-  transition: all 0.2s ease;
+  padding: 0.4rem 0.2rem;
+  transition: color var(--duration) var(--ease);
 }
 
 .nav-link:hover {
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.05);
+  color: var(--text);
 }
 
 .nav-link.active {
-  color: #ffffff;
-  background: rgba(99, 102, 241, 0.15);
-  border: 1px solid rgba(99, 102, 241, 0.3);
+  color: var(--text);
+}
+
+.nav-link.active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 2px;
 }

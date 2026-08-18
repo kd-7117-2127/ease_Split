@@ -54,7 +54,9 @@ function EventDetails() {
   }, [eventId]);
 
   useEffect(() => {
-    loadAllData();
+    void (async () => {
+      await loadAllData();
+    })();
   }, [loadAllData]);
 
   if (loading) {

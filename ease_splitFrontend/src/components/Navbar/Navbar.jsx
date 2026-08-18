@@ -1,4 +1,5 @@
 import { NavLink, Link } from "react-router-dom";
+import { Plus } from "../icons";
 import "./Navbar.css";
 
 function Navbar() {
@@ -6,8 +7,8 @@ function Navbar() {
     <header className="navbar">
       <div className="navbar-container">
         <Link to="/" className="navbar-brand">
-          <div className="brand-icon">⚡</div>
-          <span className="brand-title">Ease<span className="brand-accent">Split</span></span>
+          <span className="brand-mark" aria-hidden="true">E</span>
+          <span className="brand-title">EaseSplit</span>
         </Link>
 
         <nav className="navbar-nav">
@@ -20,14 +21,10 @@ function Navbar() {
           >
             Events
           </NavLink>
-          <NavLink
-            to="/events/new"
-            className={({ isActive }) =>
-              isActive ? "nav-link active" : "nav-link"
-            }
-          >
-            + Create Event
-          </NavLink>
+          <Link to="/events/new" className="btn btn-primary btn-sm navbar-cta">
+            <Plus size={14} />
+            Create Event
+          </Link>
         </nav>
       </div>
     </header>
