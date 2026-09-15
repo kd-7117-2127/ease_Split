@@ -1,11 +1,25 @@
-FROM eclipse-temurin:21-jdk-alpine as build
-WORKDIR /app
-COPY . .
-RUN chmod +x mvnw
-RUN ./mvnw clean package -DskipTests
+# Stage 1: Build the Spring Boot application
+FROM maven:3.9-eclipse-temurin-21 AS build
 
-FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
+
+# Copy Maven configuration
+COPY pom.xml .
+
+# Copy source code
+COPY src ./src
+
+# Build the Spring Boot JAR
+RUN mvn clean package -DskipTests
+
+# Stage 2: Run the application
+FROM eclipse-temurin:21-jre
+
+WORKDIR /app
+
+# Copy the generated JAR
 COPY --from=build /app/target/*.jar app.jar
+
 EXPOSE 8080
+
 ENTRYPOINT ["java", "-jar", "app.jar"]

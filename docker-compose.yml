@@ -1,0 +1,19 @@
+services:
+
+  backend:
+    build:
+      context: ./ease_splitBackend
+    container_name: ease-split-backend
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./ease_splitBackend/data:/app/data
+
+  frontend:
+    build:
+      context: ./ease_splitFrontend
+    container_name: ease-split-frontend
+    depends_on:
+      - backend
+    ports:
+      - "5173:80"
